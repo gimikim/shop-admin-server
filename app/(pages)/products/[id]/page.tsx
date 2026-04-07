@@ -59,7 +59,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     // 로컬 스토리지에서 기존 장바구니 불러오기
     const storedCart = localStorage.getItem('cart')
     const cart = storedCart ? JSON.parse(storedCart) : []
-    
+
     // 장바구니에 아이템 추가 및 저장
     cart.push(cartItem)
     localStorage.setItem('cart', JSON.stringify(cart))

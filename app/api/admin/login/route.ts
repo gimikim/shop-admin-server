@@ -25,18 +25,18 @@ export async function POST(req: NextRequest) {
     // 2. DB 연결
     await dbConnect()
 
-    // [개발용 로직] 첫 로그인 시동 시 admin 계정이 아예 없으면 기본 관리자 계정을 하나 추가해줍니다.
+    // [개발용 로직] 첫 로그인 시동 시 admin05 계정이 없으면 기본 관리자 계정을 하나 추가해줍니다.
     // 실서비스에서는 이 코드를 지우고 안전한 방식으로 관리자를 생성해야 합니다.
-    const adminCount = await Admin.countDocuments()
-    if (adminCount === 0 && username === 'admin') {
-      const defaultPasswordHash = hashPassword('admin')
+    const admin05Exists = await Admin.findOne({ username: 'admin05' })
+    if (!admin05Exists && username === 'admin05') {
+      const defaultPasswordHash = hashPassword('admin05')
       await Admin.create({
-        username: 'admin',
+        username: 'admin05',
         passwordHash: defaultPasswordHash,
         name: '최고 관리자',
         role: 'superadmin',
       })
-      console.log('초기 시스템: 최고 관리자(admin/admin) 계정이 자동 생성되었습니다.')
+      console.log('초기 시스템: 최고 관리자(admin05/admin05) 계정이 자동 생성되었습니다.')
     }
 
     // 3. 관리자 컬렉션에서 아이디로 사용자 검색
@@ -55,15 +55,15 @@ export async function POST(req: NextRequest) {
 
     // 5. 로그인 성공 시 JWT 발급 (일반 사용자와 구분되도록 세팅)
     const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-string-only-for-development'
-    
+
     // 관리자 전용 토큰 내용 (userId, role 포함)
     const token = jwt.sign(
-      { 
-        userId: adminUser._id, 
-        username: adminUser.username, 
-        role: adminUser.role 
-      }, 
-      jwtSecret, 
+      {
+        userId: adminUser._id,
+        username: adminUser.username,
+        role: adminUser.role,
+      },
+      jwtSecret,
       { expiresIn: '1d' } // 관리자는 일반 유저보다 잦은 갱신을 위해 1일 만료 유지
     )
 

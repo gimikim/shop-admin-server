@@ -39,7 +39,6 @@ export default function AdminLoginPage() {
       // 로그인이 성공하면 대시보드(관리자 메인) 페이지로 이동 시킵니다.
       // (대시보드는 아직 구현되지 않았지만 준비를 위해 설정해 둡니다)
       router.push('/admin/dashboard')
-      
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message)
@@ -53,18 +52,14 @@ export default function AdminLoginPage() {
 
   return (
     // 관리자 페이지 특유의 무채색 배경을 시각적으로 강하게 표현합니다.
-    <div className="min-h-screen bg-neutral-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-slate-100">
+    <div className="flex min-h-screen flex-col justify-center bg-neutral-900 py-12 text-slate-100 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-white mb-2">
-          Administrator Login
-        </h2>
-        <p className="text-center text-sm text-neutral-400">
-          시스템 관리자 전용 접속 페이지
-        </p>
+        <h2 className="mb-2 mt-6 text-center text-3xl font-extrabold tracking-tight text-white">Administrator Login</h2>
+        <p className="text-center text-sm text-neutral-400">시스템 관리자 전용 접속 페이지</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-neutral-800 py-8 px-4 shadow-2xl sm:rounded-xl sm:px-10 border border-neutral-700">
+        <div className="border border-neutral-700 bg-neutral-800 px-4 py-8 shadow-2xl sm:rounded-xl sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-neutral-300">
@@ -78,8 +73,8 @@ export default function AdminLoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-neutral-600 rounded-md shadow-sm placeholder-neutral-500 bg-neutral-900 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
-                  placeholder="admin"
+                  className="block w-full appearance-none rounded-md border border-neutral-600 bg-neutral-900 px-3 py-2 text-white placeholder-neutral-500 shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  placeholder="관리자 아이디를 입력하세요"
                 />
               </div>
             </div>
@@ -96,7 +91,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-neutral-600 rounded-md shadow-sm placeholder-neutral-500 bg-neutral-900 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+                  className="block w-full appearance-none rounded-md border border-neutral-600 bg-neutral-900 px-3 py-2 text-white placeholder-neutral-500 shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -104,7 +99,7 @@ export default function AdminLoginPage() {
 
             {/* 에러가 발생한 경우에만 경고 메시지를 보여줍니다. */}
             {error && (
-              <div className="rounded-md bg-red-900/50 p-4 border border-red-500/50">
+              <div className="rounded-md border border-red-500/50 bg-red-900/50 p-4">
                 <div className="flex">
                   <div className="ml-3">
                     <h3 className="text-sm font-medium text-red-200">{error}</h3>
@@ -117,14 +112,14 @@ export default function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-neutral-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? '로그인 처리 중...' : '관리자 계정으로 로그인'}
               </button>
             </div>
-            
+
             <div className="mt-4 text-center">
-              <Link href="/" className="text-sm text-neutral-400 hover:text-white transition-colors">
+              <Link href="/" className="text-sm text-neutral-400 transition-colors hover:text-white">
                 ← 쇼핑몰 홈으로 돌아가기
               </Link>
             </div>

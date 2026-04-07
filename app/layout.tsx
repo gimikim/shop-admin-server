@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-900 text-slate-100`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-neutral-900 text-slate-100 antialiased`}>
         {/* 모든 페이지 콘텐츠가 렌더링될 메인 영역입니다. */}
         <main>{children}</main>
       </body>
