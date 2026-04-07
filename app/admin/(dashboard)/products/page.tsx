@@ -131,14 +131,6 @@ export default function ProductsManagementPage() {
           <h1 className="text-3xl font-bold text-neutral-800">상품 관리 (Products)</h1>
           <p className="mt-1 text-sm text-neutral-500">사용자 앱에 등록된 모든 상품 정보를 조회하고 관리합니다.</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            className="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50"
-            onClick={() => alert('신규 상품 등록은 현재 쇼핑몰 판매자 단에서 제공됩니다.')}
-          >
-            새 상품 등록
-          </button>
-        </div>
       </div>
 
       {/* 3. 데이터 테이블 영역 */}
