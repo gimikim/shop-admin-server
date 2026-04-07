@@ -20,6 +20,11 @@ export default function UsersManagementPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // "상세/수정" 모달 관련 상태
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [editFormData, setEditFormData] = useState({ name: '', phoneNumber: '', user_type: 'personal' })
+  const [isSaving, setIsSaving] = useState(false)
+
   // 1. 처음 마운트 될 때 방금 만든 회원 목록 API 스크립트를 호출합니다.
   useEffect(() => {
     const fetchUsers = async () => {
@@ -82,6 +87,48 @@ export default function UsersManagementPage() {
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
+
+  // 모달 열기
+  const openEditModal = (user: User) => {
+    setSelectedUser(user)
+    setEditFormData({
+      name: user.name,
+      phoneNumber: user.phoneNumber,
+      user_type: user.user_type,
+    })
+  }
+
+  // 모달 닫기
+  const closeEditModal = () => {
+    setSelectedUser(null)
+  }
+
+  // 수정 사항 서버에 저장
+  const handleSaveChanges = async () => {
+    if (!selectedUser) return
+    setIsSaving(true)
+    try {
+      const res = await fetch(`/api/admin/users/${selectedUser._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData),
+      })
+      const data = await res.json()
+
+      if (data.success) {
+        alert('회원 정보가 성공적으로 수정되었습니다.')
+        // 로컬 상태(users 배열) 즉시 업데이트
+        setUsers(users.map((u) => (u._id === selectedUser._id ? ({ ...u, ...editFormData } as User) : u)))
+        closeEditModal()
+      } else {
+        alert(data.message || '수정에 실패했습니다.')
+      }
+    } catch {
+      alert('서버와의 통신 오류가 발생했습니다.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -183,7 +230,10 @@ export default function UsersManagementPage() {
                     </td>
                     <td className="px-6 py-4 text-center text-transparent group-hover:text-neutral-500">
                       {/* 행 마우스 오버 시 나타나는 수정 버튼 영역 */}
-                      <button className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs font-medium transition hover:bg-neutral-200 hover:text-black">
+                      <button
+                        onClick={() => openEditModal(user)}
+                        className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs font-medium transition hover:bg-neutral-200 hover:text-black"
+                      >
                         상세/수정
                       </button>
                     </td>
@@ -194,6 +244,83 @@ export default function UsersManagementPage() {
           </div>
         )}
       </div>
+
+      {/* 5. 상세/수정 모달 (Modal) */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-xl font-bold text-neutral-800">회원 관리 (상세/수정)</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-neutral-600">아이디 (ID)</label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedUser.username}
+                  className="w-full rounded-md border border-neutral-200 bg-neutral-100 px-3 py-2 text-sm text-neutral-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-neutral-600">이메일</label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedUser.email}
+                  className="w-full rounded-md border border-neutral-200 bg-neutral-100 px-3 py-2 text-sm text-neutral-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-neutral-600">이름</label>
+                <input
+                  type="text"
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-neutral-600">연락처</label>
+                <input
+                  type="text"
+                  value={editFormData.phoneNumber}
+                  onChange={(e) => setEditFormData({ ...editFormData, phoneNumber: e.target.value })}
+                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-neutral-600">회원 분류</label>
+                <select
+                  value={editFormData.user_type}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, user_type: e.target.value as 'personal' | 'business' })
+                  }
+                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="personal">개인 (Personal)</option>
+                  <option value="business">사업자 (Business)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2 text-sm">
+              <button
+                onClick={closeEditModal}
+                disabled={isSaving}
+                className="rounded-md border border-neutral-300 px-4 py-2 font-medium text-neutral-600 transition-colors hover:bg-neutral-50 disabled:opacity-50"
+              >
+                닫기
+              </button>
+              <button
+                onClick={handleSaveChanges}
+                disabled={isSaving}
+                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isSaving ? '저장 중...' : '변경 내용 저장'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
