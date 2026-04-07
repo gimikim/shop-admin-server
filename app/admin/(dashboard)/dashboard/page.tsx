@@ -1,5 +1,12 @@
+import dbConnect from '@/db/dbConnect'
+import User from '@/db/models/user'
+
 // 대시보드 홈 화면 (기본 통계 요약 제공)
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  await dbConnect()
+
+  // 최근 가입한 유저 정보 5개를 역순(최신순)으로 가져옵니다.
+  const recentUsers = await User.find({}).sort({ createdAt: -1 }).limit(5).lean()
   return (
     <div className="space-y-6">
       <div className="mb-8 flex items-center justify-between">
@@ -55,19 +62,34 @@ export default function AdminDashboardPage() {
           <h2 className="mb-4 text-lg font-bold text-neutral-800">최근 가입 내역</h2>
           <div className="flex-1 overflow-y-auto pr-2">
             <ul className="space-y-4">
-              {/* 반복되는 아이템 예시 */}
-              {[1, 2, 3, 4, 5].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center justify-between border-b border-neutral-100 py-2 last:border-0"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-neutral-800">user{item}@example.com</p>
-                    <p className="text-xs text-neutral-500">방금 전 가입</p>
-                  </div>
-                  <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-600">신규</span>
-                </li>
-              ))}
+              {/* DB 기반 최신 가입 5명 랜더링 */}
+              {recentUsers.length > 0 ? (
+                recentUsers.map((user) => {
+                  const dateStr = new Date(user.createdAt).toLocaleDateString('ko-KR')
+                  return (
+                    <li
+                      key={user._id.toString()}
+                      className="flex items-center justify-between border-b border-neutral-100 py-2 last:border-0"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-neutral-800">{user.email}</p>
+                        <p className="text-xs text-neutral-500">{dateStr} 가입</p>
+                      </div>
+                      {user.user_type === 'business' ? (
+                        <span className="rounded-full bg-purple-50 px-2 py-1 text-xs font-medium text-purple-600">
+                          사업자
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-600">
+                          일반
+                        </span>
+                      )}
+                    </li>
+                  )
+                })
+              ) : (
+                <div className="py-4 text-center text-sm text-neutral-400">최근 가입 내역이 없습니다.</div>
+              )}
             </ul>
           </div>
         </div>
