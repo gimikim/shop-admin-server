@@ -64,15 +64,16 @@ export default async function AdminDashboardPage() {
             <ul className="space-y-4">
               {/* DB 기반 최신 가입 5명 랜더링 */}
               {recentUsers.length > 0 ? (
-                recentUsers.map((user) => {
-                  const dateStr = new Date(user.createdAt).toLocaleDateString('ko-KR')
+                recentUsers.map((doc: unknown) => {
+                  const user = doc as { _id: unknown; email?: string; createdAt?: string | Date; user_type?: string }
+                  const dateStr = user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'
                   return (
                     <li
-                      key={user._id.toString()}
+                      key={user._id ? String(user._id) : Math.random().toString()}
                       className="flex items-center justify-between border-b border-neutral-100 py-2 last:border-0"
                     >
                       <div>
-                        <p className="text-sm font-medium text-neutral-800">{user.email}</p>
+                        <p className="text-sm font-medium text-neutral-800">{user.email || '이메일 없음'}</p>
                         <p className="text-xs text-neutral-500">{dateStr} 가입</p>
                       </div>
                       {user.user_type === 'business' ? (
