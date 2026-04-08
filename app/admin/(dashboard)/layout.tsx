@@ -20,6 +20,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
     { name: 'Dashboard (대시보드)', path: '/admin/dashboard' },
     { name: 'Users (회원 관리)', path: '/admin/users' },
     { name: 'Products (상품 관리)', path: '/admin/products' },
+    { name: 'Promotions (기획전 관리)', path: '/admin/promotions' },
     { name: 'Orders (주문 관리)', path: '/admin/orders' },
     { name: 'Settings (설정)', path: '/admin/settings' },
   ]
