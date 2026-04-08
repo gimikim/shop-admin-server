@@ -21,6 +21,12 @@ export default function PromotionsPage() {
   const [newImageUrl, setNewImageUrl] = useState<string>('')
   const [submitting, setSubmitting] = useState<boolean>(false)
 
+  // 수정 관련 상태
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+  const [editingId, setEditingId] = useState<string>('')
+  const [editTitle, setEditTitle] = useState<string>('')
+  const [editImageUrl, setEditImageUrl] = useState<string>('')
+
   // 데이터 로딩
   const fetchPromotions = async () => {
     setLoading(true)
@@ -83,6 +89,47 @@ export default function PromotionsPage() {
     } catch (error) {
       console.error(error)
       alert('삭제 중 오류가 발생했습니다.')
+    }
+  }
+
+  // 수정 버튼 클릭 시 모달 열기
+  const handleEditClick = (promo: Promotion) => {
+    setEditingId(promo._id)
+    setEditTitle(promo.title)
+    setEditImageUrl(promo.imageUrl)
+    setIsEditModalOpen(true)
+  }
+
+  // 수정 처리
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editTitle.trim() || !editImageUrl.trim()) {
+      alert('모든 필드를 입력해주세요.')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const res = await fetch(`/api/admin/promotions/${editingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editTitle, imageUrl: editImageUrl }),
+      })
+      const data = await res.json()
+
+      if (data.success) {
+        setPromotions((prev) =>
+          prev.map((promo) => (promo._id === editingId ? { ...promo, title: editTitle, imageUrl: editImageUrl } : promo))
+        )
+        setIsEditModalOpen(false)
+      } else {
+        alert(data.message || '수정 실패')
+      }
+    } catch (error) {
+      console.error(error)
+      alert('수정 중 에러가 발생했습니다.')
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -207,6 +254,12 @@ export default function PromotionsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
+                        onClick={() => handleEditClick(promo)}
+                        className="text-sm font-medium text-blue-600 hover:text-blue-900 mr-4"
+                      >
+                        수정
+                      </button>
+                      <button
                         onClick={() => handleDelete(promo._id)}
                         className="text-sm font-medium text-red-600 hover:text-red-900"
                       >
@@ -275,6 +328,66 @@ export default function PromotionsPage() {
                   disabled={submitting}
                 >
                   {submitting ? '등록 중...' : '등록하기'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 수정 모달 */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-opacity">
+          <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
+            <h3 className="text-lg font-bold leading-6 text-gray-900 mb-4">기획전 배너 수정</h3>
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">배너 제목 (관리용)</label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="추석맞이 특별 할인 기획전"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">배너 이미지 URL</label>
+                <input
+                  type="url"
+                  value={editImageUrl}
+                  onChange={(e) => setEditImageUrl(e.target.value)}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="https://example.com/banner.png"
+                  required
+                />
+              </div>
+
+              {/* 이미지 미리보기 */}
+              {editImageUrl && (
+                <div className="mt-2 border rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
+                  <img src={editImageUrl} alt="미리보기" className="max-h-32 object-contain" onError={(e) => {
+                    ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x120?text=Invalid+Image+URL'
+                  }} />
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="rounded-lg border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  disabled={submitting}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-blue-400"
+                  disabled={submitting}
+                >
+                  {submitting ? '수정 중...' : '수정하기'}
                 </button>
               </div>
             </form>
