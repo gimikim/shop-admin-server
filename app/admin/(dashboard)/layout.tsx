@@ -29,7 +29,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
     // 전체 컨테이너: 어두운 배경(사이드바)과 밝은 배경(메인)의 대비를 주기 위해 bg-neutral-100 등을 사용
     <div className="flex min-h-screen bg-neutral-100 font-sans text-neutral-900">
       {/* 1. 사이드바 (Sidebar) - 좌측 영역 */}
-      <aside className="flex hidden w-64 flex-shrink-0 flex-col bg-neutral-900 text-white md:flex">
+      <aside className="hidden w-64 flex-shrink-0 flex-col bg-neutral-900 text-white md:flex">
         {/* 로고 영역 */}
         <div className="flex h-16 items-center bg-neutral-950 px-6">
           <Link href="/admin/dashboard" className="text-xl font-bold tracking-wider">

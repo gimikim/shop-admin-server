@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useEffect, useState } from 'react'
@@ -223,26 +224,28 @@ export default function OrdersManagementPage() {
       {/* 4. Detail / Edit Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
             <h2 className="mb-4 text-xl font-bold text-neutral-800">주문 상세 내역</h2>
             <div className="space-y-6">
               {/* 기본 정보 */}
-              <div className="rounded-lg bg-neutral-50 p-4 border border-neutral-100">
+              <div className="rounded-lg border border-neutral-100 bg-neutral-50 p-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="block text-xs font-medium text-neutral-500 mb-1">주문 번호</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-500">주문 번호</span>
                     <span className="font-semibold">{selectedOrder.orderNumber}</span>
                   </div>
                   <div>
-                    <span className="block text-xs font-medium text-neutral-500 mb-1">주문 일시</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-500">주문 일시</span>
                     <span>{new Date(selectedOrder.createdAt).toLocaleString('ko-KR')}</span>
                   </div>
                   <div>
-                    <span className="block text-xs font-medium text-neutral-500 mb-1">수령인</span>
-                    <span>{selectedOrder.recipientName} ({selectedOrder.recipientPhone})</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-500">수령인</span>
+                    <span>
+                      {selectedOrder.recipientName} ({selectedOrder.recipientPhone})
+                    </span>
                   </div>
                   <div>
-                    <span className="block text-xs font-medium text-neutral-500 mb-1">배송지</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-500">배송지</span>
                     <span>{selectedOrder.shippingAddress}</span>
                   </div>
                 </div>
@@ -251,15 +254,17 @@ export default function OrdersManagementPage() {
               {/* 주문 상품 리스트 */}
               <div>
                 <h3 className="mb-2 text-sm font-bold text-neutral-700">주문 상품 목록</h3>
-                <div className="border rounded-lg border-neutral-200 divide-y divide-neutral-100 text-sm">
+                <div className="divide-y divide-neutral-100 rounded-lg border border-neutral-200 text-sm">
                   {selectedOrder.items.map((item, idx) => (
                     <div key={idx} className="flex items-center justify-between p-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 overflow-hidden rounded bg-neutral-200 shrink-0">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-neutral-200">
                           {item.image ? (
                             <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                           ) : (
-                            <span className="flex h-full items-center justify-center text-xs text-neutral-400">Img</span>
+                            <span className="flex h-full items-center justify-center text-xs text-neutral-400">
+                              Img
+                            </span>
                           )}
                         </div>
                         <div>
@@ -275,7 +280,9 @@ export default function OrdersManagementPage() {
                   ))}
                   <div className="bg-neutral-50 p-3 text-right">
                     <span className="mr-4 text-sm font-medium text-neutral-600">총 결제금액:</span>
-                    <span className="text-lg font-bold text-neutral-900">{formatPrice(selectedOrder.totalAmount)}원</span>
+                    <span className="text-lg font-bold text-neutral-900">
+                      {formatPrice(selectedOrder.totalAmount)}원
+                    </span>
                   </div>
                 </div>
               </div>
@@ -295,7 +302,6 @@ export default function OrdersManagementPage() {
                   <option value="주문취소">주문취소 (Cancelled)</option>
                 </select>
               </div>
-
             </div>
 
             <div className="mt-8 flex justify-end gap-2 text-sm">

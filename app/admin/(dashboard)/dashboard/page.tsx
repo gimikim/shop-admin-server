@@ -34,10 +34,17 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* 카드 3: 신규 주문 건수 */}
-        <Link href="/admin/orders" className="group flex flex-col rounded-xl border border-neutral-100 bg-white p-6 shadow-sm transition-colors hover:border-blue-300 hover:bg-blue-50">
-          <span className="mb-1 text-sm font-medium text-neutral-500 group-hover:text-blue-600">신규 주문 (New Orders)</span>
+        <Link
+          href="/admin/orders"
+          className="group flex flex-col rounded-xl border border-neutral-100 bg-white p-6 shadow-sm transition-colors hover:border-blue-300 hover:bg-blue-50"
+        >
+          <span className="mb-1 text-sm font-medium text-neutral-500 group-hover:text-blue-600">
+            신규 주문 (New Orders)
+          </span>
           <span className="text-2xl font-bold text-neutral-800 group-hover:text-blue-700">128 건</span>
-          <span className="mt-2 text-xs font-medium text-red-500 group-hover:text-blue-500">클릭하여 주문 관리로 이동 &rarr;</span>
+          <span className="mt-2 text-xs font-medium text-red-500 group-hover:text-blue-500">
+            클릭하여 주문 관리로 이동 &rarr;
+          </span>
         </Link>
 
         {/* 카드 4: 등록된 상품 수 */}

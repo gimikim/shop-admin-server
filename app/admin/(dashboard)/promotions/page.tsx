@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
 
 interface Promotion {
   _id: string
@@ -119,7 +119,9 @@ export default function PromotionsPage() {
 
       if (data.success) {
         setPromotions((prev) =>
-          prev.map((promo) => (promo._id === editingId ? { ...promo, title: editTitle, imageUrl: editImageUrl } : promo))
+          prev.map((promo) =>
+            promo._id === editingId ? { ...promo, title: editTitle, imageUrl: editImageUrl } : promo
+          )
         )
         setIsEditModalOpen(false)
       } else {
@@ -190,13 +192,23 @@ export default function PromotionsPage() {
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-500">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 border-b border-gray-200">
+            <thead className="border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-700">
               <tr>
-                <th scope="col" className="px-6 py-4 font-medium">배너 이미지</th>
-                <th scope="col" className="px-6 py-4 font-medium">관리 제목</th>
-                <th scope="col" className="px-6 py-4 font-medium">상태 (On/Off)</th>
-                <th scope="col" className="px-6 py-4 font-medium">등록일</th>
-                <th scope="col" className="px-6 py-4 text-right font-medium">관리</th>
+                <th scope="col" className="px-6 py-4 font-medium">
+                  배너 이미지
+                </th>
+                <th scope="col" className="px-6 py-4 font-medium">
+                  관리 제목
+                </th>
+                <th scope="col" className="px-6 py-4 font-medium">
+                  상태 (On/Off)
+                </th>
+                <th scope="col" className="px-6 py-4 font-medium">
+                  등록일
+                </th>
+                <th scope="col" className="px-6 py-4 text-right font-medium">
+                  관리
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -214,13 +226,13 @@ export default function PromotionsPage() {
                 </tr>
               ) : (
                 promotions.map((promo) => (
-                  <tr key={promo._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                  <tr key={promo._id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
                     <td className="px-6 py-4">
                       {/* 외부 URL일 수 있으므로 img 태그 사용 */}
                       <img
                         src={promo.imageUrl}
                         alt={promo.title}
-                        className="h-16 w-32 object-cover rounded shadow-sm border border-gray-200"
+                        className="h-16 w-32 rounded border border-gray-200 object-cover shadow-sm"
                         onError={(e) => {
                           // 이미지 로드 실패시 처리
                           ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/128x64?text=No+Image'
@@ -249,13 +261,11 @@ export default function PromotionsPage() {
                         {promo.isActive ? '활성 (노출됨)' : '비활성 (숨김)'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {new Date(promo.createdAt).toLocaleDateString()}
-                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">{new Date(promo.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleEditClick(promo)}
-                        className="text-sm font-medium text-blue-600 hover:text-blue-900 mr-4"
+                        className="mr-4 text-sm font-medium text-blue-600 hover:text-blue-900"
                       >
                         수정
                       </button>
@@ -278,10 +288,10 @@ export default function PromotionsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-opacity">
           <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-            <h3 className="text-lg font-bold leading-6 text-gray-900 mb-4">신규 기획전 배너 등록</h3>
+            <h3 className="mb-4 text-lg font-bold leading-6 text-gray-900">신규 기획전 배너 등록</h3>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">배너 제목 (관리용)</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">배너 제목 (관리용)</label>
                 <input
                   type="text"
                   value={newTitle}
@@ -292,7 +302,7 @@ export default function PromotionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">배너 이미지 URL</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">배너 이미지 URL</label>
                 <input
                   type="url"
                   value={newImageUrl}
@@ -306,10 +316,15 @@ export default function PromotionsPage() {
 
               {/* 이미지 미리보기 */}
               {newImageUrl && (
-                <div className="mt-2 border rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
-                  <img src={newImageUrl} alt="미리보기" className="max-h-32 object-contain" onError={(e) => {
-                    ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x120?text=Invalid+Image+URL'
-                  }} />
+                <div className="mt-2 flex items-center justify-center overflow-hidden rounded-lg border bg-gray-100 p-2">
+                  <img
+                    src={newImageUrl}
+                    alt="미리보기"
+                    className="max-h-32 object-contain"
+                    onError={(e) => {
+                      ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x120?text=Invalid+Image+URL'
+                    }}
+                  />
                 </div>
               )}
 
@@ -339,10 +354,10 @@ export default function PromotionsPage() {
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-opacity">
           <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-            <h3 className="text-lg font-bold leading-6 text-gray-900 mb-4">기획전 배너 수정</h3>
+            <h3 className="mb-4 text-lg font-bold leading-6 text-gray-900">기획전 배너 수정</h3>
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">배너 제목 (관리용)</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">배너 제목 (관리용)</label>
                 <input
                   type="text"
                   value={editTitle}
@@ -353,7 +368,7 @@ export default function PromotionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">배너 이미지 URL</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">배너 이미지 URL</label>
                 <input
                   type="url"
                   value={editImageUrl}
@@ -366,10 +381,15 @@ export default function PromotionsPage() {
 
               {/* 이미지 미리보기 */}
               {editImageUrl && (
-                <div className="mt-2 border rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
-                  <img src={editImageUrl} alt="미리보기" className="max-h-32 object-contain" onError={(e) => {
-                    ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x120?text=Invalid+Image+URL'
-                  }} />
+                <div className="mt-2 flex items-center justify-center overflow-hidden rounded-lg border bg-gray-100 p-2">
+                  <img
+                    src={editImageUrl}
+                    alt="미리보기"
+                    className="max-h-32 object-contain"
+                    onError={(e) => {
+                      ;(e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x120?text=Invalid+Image+URL'
+                    }}
+                  />
                 </div>
               )}
 

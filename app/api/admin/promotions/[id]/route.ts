@@ -13,16 +13,12 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     await dbConnect()
     const { id } = params
-    
+
     // 요청 본문에서 업데이트할 필드들을 가져옴
     const body = await req.json()
 
     // 배너 정보 업데이트
-    const updatedPromotion = await Promotion.findByIdAndUpdate(
-      id,
-      { $set: body },
-      { new: true, runValidators: true }
-    )
+    const updatedPromotion = await Promotion.findByIdAndUpdate(id, { $set: body }, { new: true, runValidators: true })
 
     if (!updatedPromotion) {
       return NextResponse.json({ success: false, message: '해당 배너를 찾을 수 없습니다.' }, { status: 404 })
